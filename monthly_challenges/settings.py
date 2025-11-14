@@ -29,8 +29,9 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+#below are built in apps like a build in module 
 INSTALLED_APPS = [
+    'challenges', #our app folder , we created newly , this makes django aware our app specific template and below app_dirs has to be true
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,7 +55,9 @@ ROOT_URLCONF = 'monthly_challenges.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ 
+            #BASE_DIR / "challenges" / "templates" #python will also check for this folder # instead of hardcoding here add our own app in above installed apps
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

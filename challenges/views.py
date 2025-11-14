@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound , HttpResponseRedirect # this is class
-
+from django.urls import reverse
+from django.template.loader import render_to_string # will be used to convert HTml code into string
 # Create your views here.
 
 """
@@ -48,6 +49,7 @@ def monthly_challenge(request , month): # this month is exact keyword used in ur
         return HttpResponseNotFound("Error = This is something else month")
     return HttpResponse(text)
 '''
+
 monthly_challenges = {
     "january": "This is January",
     "february": "This is February",
@@ -62,12 +64,25 @@ monthly_challenges = {
     "november": "This is November",
     "december": "This is December"
 }
+    
+def index(request):
+    list_items = ''
+    months = list(monthly_challenges.keys())
+    for month in months:
+        capitalized_month = month.capitalize() #first letter to make it capital
+        month_path = reverse("month-challenge", args=[month])
+        list_items += f"<li><a href = \"{month_path}\">{capitalized_month}</a></li>" #\is used to allow next word, double quotes we can not used it twice  
+    # this for loop will create list items side by side
+    response_data = f"<ul>{list_items}</ul>"
+    return HttpResponse(response_data)
 
 def monthly_challenge_by_number(request , month):
     months = list(monthly_challenges.keys()) # gives list of dictinary keys 
     try:
         months_values = months[month-1] # to avoid starting index 0 means 1 is january not february
-        return HttpResponseRedirect("/challenges/" + months_values) # this will redirect to given dictonary values
+        redirect_path = reverse("month-challenge", args=[months_values]) # it will build the path like /challenge/january
+        #return HttpResponseRedirect("/challenge/" + months_values) # this will redirect to given dictonary values
+        return HttpResponseRedirect(redirect_path) #used for redirecting to another url, basically avoids hard coding the url path as above
     except:
         return HttpResponseNotFound("Invalid Month number ")
 
@@ -78,7 +93,9 @@ def monthly_challenge_by_number(request , month):
 def monthly_challenge(request , month):
     try:
         challenges_text = monthly_challenges[month]
-        return HttpResponse(challenges_text)
+        #response_data = f"<h1>{challenges_text}</h1>" #html header
+        response_data = render_to_string("challenges/challenge.html") #converts entire html file into string to pass to httpresponse
+        return HttpResponse(response_data)
     except:    
-        return HttpResponseNotFound("Error = number not found")
+        return HttpResponseNotFound("<h1>Error = number not found</h1>")
     

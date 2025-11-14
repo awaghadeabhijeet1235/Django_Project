@@ -20,5 +20,5 @@ from django.urls import path , include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("challenges/",include("challenges.url"))  #app name and file name
+    path("challenges/",include("challenges.url"))  #app name and file name, we already added reverse function so challenges can be used with any other name and that name can be used in directly in url
 ]
